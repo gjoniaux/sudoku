@@ -1,6 +1,6 @@
-package be.gjoniaux.processor;
+package be.gjoniaux.sudoku.processor;
 
-import be.gjoniaux.model.Case;
+import be.gjoniaux.sudoku.model.Case;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,10 @@ public class CaseProcessor {
         }
     }
 
+    public void initialize(List<Case> cases) {
+        this.cases = cases;
+    }
+
     public Integer getNextPossibleNumber(Integer caseId, Integer index) {
         return cases.get(caseId).getNextPossibleNumber(index);
     }
@@ -38,12 +42,12 @@ public class CaseProcessor {
         return caze.removeNumber(number);
     }
 
-    public boolean processNextNumber() {
-        return false;
-    }
-
     public Integer getLastSize() {
         return lastSize;
+    }
+
+    public List<Case> getCases() {
+        return cases;
     }
 
     public String toString() {

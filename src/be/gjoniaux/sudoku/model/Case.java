@@ -1,13 +1,13 @@
-package be.gjoniaux.model;
+package be.gjoniaux.sudoku.model;
 
-import be.gjoniaux.exception.BadChoiceException;
-import be.gjoniaux.exception.NoMorePossibilityException;
+import be.gjoniaux.sudoku.exception.BadChoiceException;
+import be.gjoniaux.sudoku.exception.NoMorePossibilityException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Case {
+public class Case implements Cloneable {
     private Integer id;
     private Integer correctNumber;
     private List<Integer> numbers;
@@ -16,6 +16,12 @@ public class Case {
         this.id = id;
         this.correctNumber = 0;
         this.numbers = new ArrayList<Integer>();
+    }
+
+    public Case(Integer id, Integer correctNumber, List<Integer> numbers) {
+        this.id = id;
+        this.correctNumber = correctNumber;
+        this.numbers = new ArrayList<Integer>(numbers);
     }
 
     public void initialize(CaseGroup... groupArray) {
@@ -38,7 +44,7 @@ public class Case {
 
     public Integer getNextPossibleNumber(Integer index) {
         if (numbers.size() <= index) {
-            throw new BadChoiceException("No next possible number for this case " + this);
+            throw new NoMorePossibilityException("No next possible number for this case " + this);
         }
         return numbers.get(index);
     }
@@ -69,6 +75,11 @@ public class Case {
 
     public boolean isFixed() {
         return getCorrectNumber() != 0;
+    }
+
+    @Override
+    public Case clone() {
+        return new Case(id, correctNumber, numbers);
     }
 
     public String toString() {

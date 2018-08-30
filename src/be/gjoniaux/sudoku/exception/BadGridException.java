@@ -1,4 +1,4 @@
-package be.gjoniaux.exception;
+package be.gjoniaux.sudoku.exception;
 
 public class BadGridException extends RuntimeException {
     public BadGridException() {

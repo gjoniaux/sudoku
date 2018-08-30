@@ -1,6 +1,6 @@
-package be.gjoniaux.processor;
+package be.gjoniaux.sudoku.processor;
 
-import be.gjoniaux.model.CaseGroup;
+import be.gjoniaux.sudoku.model.CaseGroup;
 
 import java.util.*;
 
@@ -33,6 +33,10 @@ public class CaseGroupProcessor {
         }
     }
 
+    public void initialize(List<CaseGroup> caseGroups) {
+        this.caseGroups = caseGroups;
+    }
+
     public void fixNumber(Integer caseId, Integer number) {
         // Fix correct case in groups
         for (Integer groupId : getGroupIdsContainingACase(caseId)) {
@@ -56,8 +60,8 @@ public class CaseGroupProcessor {
         return lastRemovedCases;
     }
 
-    public boolean processNextNumber() {
-        return false;
+    public List<CaseGroup> getCaseGroups() {
+        return caseGroups;
     }
 
     public String toString() {

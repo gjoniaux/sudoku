@@ -1,4 +1,4 @@
-package be.gjoniaux.exception;
+package be.gjoniaux.sudoku.exception;
 
 public class BadChoiceException extends RuntimeException {
     public BadChoiceException() {

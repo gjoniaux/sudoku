@@ -1,6 +1,6 @@
-package be.gjoniaux.model;
+package be.gjoniaux.sudoku.model;
 
-import be.gjoniaux.exception.BadChoiceException;
+import be.gjoniaux.sudoku.exception.BadChoiceException;
 
 import java.util.*;
 
@@ -9,6 +9,11 @@ public class CaseGroup {
 
     public CaseGroup() {
         caseGroup = new HashMap<Integer, List<Integer>>();
+    }
+
+    public CaseGroup(Map<Integer, List<Integer>> caseGroup) {
+        this.caseGroup = new HashMap<Integer, List<Integer>>();
+        caseGroup.entrySet().forEach(cg -> this.caseGroup.put(cg.getKey(), new ArrayList<Integer>(cg.getValue())));
     }
 
     public void initialize() {
@@ -48,6 +53,11 @@ public class CaseGroup {
     public Integer getCorrectCaseId(Integer number) {
         List<Integer> numberPossibleCases = caseGroup.get(number);
         return numberPossibleCases.size() == 1 ? numberPossibleCases.get(0) : -1;
+    }
+
+    @Override
+    public CaseGroup clone() {
+        return new CaseGroup(caseGroup);
     }
 
     public String toString() {

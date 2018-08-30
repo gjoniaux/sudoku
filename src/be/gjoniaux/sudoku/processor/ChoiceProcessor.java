@@ -1,6 +1,6 @@
-package be.gjoniaux.processor;
+package be.gjoniaux.sudoku.processor;
 
-import be.gjoniaux.model.Choice;
+import be.gjoniaux.sudoku.model.Choice;
 
 import java.util.*;
 
@@ -25,6 +25,10 @@ public class ChoiceProcessor {
         }
     }
 
+    public void initialize(Map<Integer, List<Integer>> caseSizes) {
+        this.caseSizes = caseSizes;
+    }
+
     public void fixNumber(Integer caseId, Integer lastSize) {
         caseSizes.get(lastSize).remove(caseId);
     }
@@ -42,7 +46,7 @@ public class ChoiceProcessor {
         List<Integer> sizes = null;
         // Cases with only one element are automatically next ones
         if (!(sizes = caseSizes.get(1)).isEmpty()) {
-            return new Choice(sizes.get(0), 0);
+            return new Choice(sizes.get(0), 0, 1);
         }
         // Cases with more than one element, a choice has to be made
         for (int i=2; i<=9; i++) {
@@ -55,15 +59,16 @@ public class ChoiceProcessor {
                     choices.push(caseId);
                     index = 0;
                 }
-                return new Choice(caseId, index);
+                Choice choice = new Choice(caseId, index, i, true);
+                return choice;
             }
         }
         return null;
     }
 
-    public void invalidChoice(Choice choice) {
+    public Integer invalidChoice(Choice choice) {
         Integer caseId = choices.pop();
-        if (choice.getCaseId().equals(caseId)) {
+        if (choice.getIndex() >= choice.getSize()) {
             choicesIndex.remove(caseId);
             caseId = choices.peek();
         }
@@ -71,6 +76,15 @@ public class ChoiceProcessor {
             choices.push(caseId);
         }
         choicesIndex.put(caseId, choicesIndex.get(caseId) + 1);
+        return caseId;
+    }
+
+    public Map<Integer, List<Integer>> getCaseSizes() {
+        return caseSizes;
+    }
+
+    public Map<Integer, Integer> getChoicesIndex() {
+        return choicesIndex;
     }
 
     public String toString() {

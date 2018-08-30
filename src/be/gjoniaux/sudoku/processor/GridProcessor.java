@@ -1,20 +1,23 @@
-package be.gjoniaux.processor;
+package be.gjoniaux.sudoku.processor;
 
-import be.gjoniaux.exception.BadChoiceException;
-import be.gjoniaux.exception.BadGridException;
-import be.gjoniaux.exception.NoMorePossibilityException;
-import be.gjoniaux.model.Choice;
+import be.gjoniaux.sudoku.exception.BadChoiceException;
+import be.gjoniaux.sudoku.exception.BadGridException;
+import be.gjoniaux.sudoku.exception.NoMorePossibilityException;
+import be.gjoniaux.sudoku.model.Backup;
+import be.gjoniaux.sudoku.model.Choice;
 
 public class GridProcessor {
     private CaseProcessor caseProcessor;
     private CaseGroupProcessor caseGroupProcessor;
     private ChoiceProcessor choiceProcessor;
+    private BackupProcessor backupProcessor;
     private Integer[][] grid;
 
     public GridProcessor(Integer[][] grid) {
         this.caseProcessor = new CaseProcessor();
         this.caseGroupProcessor = new CaseGroupProcessor();
         this.choiceProcessor = new ChoiceProcessor();
+        this.backupProcessor = new BackupProcessor();
         this.grid = grid;
     }
 
@@ -22,6 +25,12 @@ public class GridProcessor {
         this.caseProcessor.initialize();
         this.caseGroupProcessor.initialize();
         this.choiceProcessor.initialize();
+    }
+
+    public void initialize(Backup backup) {
+        this.caseProcessor.initialize(backup.getCases());
+        this.caseGroupProcessor.initialize(backup.getGroups());
+        this.choiceProcessor.initialize(backup.getCaseSizes());
     }
 
     public void process() {
@@ -44,14 +53,17 @@ public class GridProcessor {
         Choice choice = this.choiceProcessor.findNextCase();
         while (choice != null) {
             try {
+                // Backup when choice has been made
+                if (choice.isChoice()) {
+                    this.backupProcessor.putBackup(choice.getCaseId(), new Backup(this.caseProcessor.getCases(), this.caseGroupProcessor.getCaseGroups(), this.choiceProcessor.getCaseSizes(), this.choiceProcessor.getChoicesIndex()));
+                    //System.out.println(this.backupProcessor);
+                }
                 fixNumber(choice.getCaseId(), caseProcessor.getNextPossibleNumber(choice.getCaseId(), choice.getIndex()));
                 choice = this.choiceProcessor.findNextCase();
             }
             catch (BadChoiceException e) {
-                this.initialize();
-                this.choiceProcessor.invalidChoice(choice);
-                this.process();
-                choice = null;
+                this.initialize(this.backupProcessor.getBackup(this.choiceProcessor.invalidChoice(choice)));
+                choice = this.choiceProcessor.findNextCase();
             }
         }
     }

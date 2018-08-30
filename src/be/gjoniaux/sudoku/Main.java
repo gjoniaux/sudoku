@@ -1,6 +1,10 @@
-package be.gjoniaux;
+package be.gjoniaux.sudoku;
 
-import be.gjoniaux.processor.GridProcessor;
+import be.gjoniaux.sudoku.model.Choice;
+import be.gjoniaux.sudoku.processor.GridProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static final Integer[][] GRID =
